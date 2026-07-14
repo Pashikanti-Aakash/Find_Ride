@@ -205,11 +205,12 @@ a:hover {
 
 .btn-primary {
   background-color: var(--primary);
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
+  color: #ffffff !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
@@ -220,22 +221,24 @@ a:hover {
 
 .btn-secondary {
   background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
   background-color: var(--border-color);
+  color: var(--text-primary) !important;
   transform: translateY(-2px);
 }
 
 .btn-danger {
   background-color: var(--error);
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .btn-danger:hover {
   background-color: #dc2626;
+  color: #ffffff !important;
   transform: translateY(-2px);
 }
 

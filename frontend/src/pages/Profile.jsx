@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { User, Mail, Lock, Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import './Profile.css';
 
 const Profile = () => {
   const { user, manufacturerDetails, updateProfile, updatePassword } = useContext(AuthContext);
@@ -22,7 +23,7 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="glass-panel" style={styles.errorCard}>
+      <div className="glass-panel profile-error-card">
         <AlertCircle size={48} color="var(--error)" />
         <h2 style={{ marginTop: '1rem' }}>Access Denied</h2>
         <p style={{ color: 'var(--text-secondary)' }}>You must be logged in to view your profile.</p>
@@ -81,27 +82,27 @@ const Profile = () => {
   };
 
   return (
-    <div style={styles.container} className="animate-fade-in">
-      <div style={styles.header}>
+    <div className="profile-container animate-fade-in">
+      <div className="profile-header">
         <h1>Account Profile</h1>
         <p style={{ color: 'var(--text-muted)' }}>Manage your personal details and security credentials</p>
       </div>
 
-      <div style={styles.layout}>
+      <div className="profile-layout">
         {/* Left Side: General Profile Settings */}
-        <div className="glass-panel" style={styles.sectionCard}>
-          <h2 style={styles.sectionTitle}>General Information</h2>
-          <div style={styles.divider}></div>
+        <div className="glass-panel profile-section-card">
+          <h2 className="profile-section-title">General Information</h2>
+          <div className="profile-divider"></div>
 
           {profileSuccess && (
-            <div style={styles.successBanner} className="animate-slide-in">
+            <div className="profile-success-banner animate-slide-in">
               <CheckCircle size={18} />
               <span>{profileSuccess}</span>
             </div>
           )}
 
           {profileError && (
-            <div style={styles.errorBanner} className="animate-slide-in">
+            <div className="profile-error-banner animate-slide-in">
               <AlertCircle size={18} />
               <span>{profileError}</span>
             </div>
@@ -110,13 +111,12 @@ const Profile = () => {
           <form onSubmit={handleUpdateProfile}>
             <div className="form-group">
               <label className="form-label" htmlFor="profile-username">Username</label>
-              <div style={styles.inputContainer}>
-                <User style={styles.inputIcon} size={18} />
+              <div className="profile-input-container">
+                <User className="profile-input-icon" size={18} />
                 <input
                   id="profile-username"
                   type="text"
-                  className="form-input"
-                  style={styles.inputWithIcon}
+                  className="form-input profile-input-with-icon"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={profileLoading}
@@ -127,13 +127,12 @@ const Profile = () => {
 
             <div className="form-group" style={{ marginBottom: '1.5rem' }}>
               <label className="form-label" htmlFor="profile-email">Email Address</label>
-              <div style={styles.inputContainer}>
-                <Mail style={styles.inputIcon} size={18} />
+              <div className="profile-input-container">
+                <Mail className="profile-input-icon" size={18} />
                 <input
                   id="profile-email"
                   type="email"
-                  className="form-input"
-                  style={styles.inputWithIcon}
+                  className="form-input profile-input-with-icon"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={profileLoading}
@@ -154,27 +153,26 @@ const Profile = () => {
 
           {/* Manufacturer detail block if role = manufacturer */}
           {user.role === 'manufacturer' && manufacturerDetails && (
-            <div style={styles.detailsBlock} className="animate-slide-in">
+            <div className="profile-details-block animate-slide-in">
               <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Shield size={18} color="var(--accent)" /> Manufacturer Entity Details
               </h3>
-              <div style={styles.detailsGrid}>
-                <div style={styles.detailsRow}>
-                  <span style={styles.detailsLabel}>Brand Represented:</span>
-                  <span style={styles.detailsValue}>{manufacturerDetails.brand_name}</span>
+              <div className="profile-details-grid">
+                <div className="profile-details-row">
+                  <span className="profile-details-label">Brand Represented:</span>
+                  <span className="profile-details-value">{manufacturerDetails.brand_name}</span>
                 </div>
-                <div style={styles.detailsRow}>
-                  <span style={styles.detailsLabel}>Company Name:</span>
-                  <span style={styles.detailsValue}>{manufacturerDetails.company_name}</span>
+                <div className="profile-details-row">
+                  <span className="profile-details-label">Company Name:</span>
+                  <span className="profile-details-value">{manufacturerDetails.company_name}</span>
                 </div>
-                <div style={styles.detailsRow}>
-                  <span style={styles.detailsLabel}>Registration ID:</span>
-                  <span style={styles.detailsValue}>{manufacturerDetails.registration_number}</span>
+                <div className="profile-details-row">
+                  <span className="profile-details-label">Registration ID:</span>
+                  <span className="profile-details-value">{manufacturerDetails.registration_number}</span>
                 </div>
-                <div style={styles.detailsRow}>
-                  <span style={styles.detailsLabel}>Approval Status:</span>
-                  <span style={{
-                    ...styles.detailsValue,
+                <div className="profile-details-row">
+                  <span className="profile-details-label">Approval Status:</span>
+                  <span className="profile-details-value" style={{
                     fontWeight: 700,
                     color: manufacturerDetails.status === 'approved' ? 'var(--success)' : 
                            manufacturerDetails.status === 'pending' ? 'var(--warning)' : 
@@ -189,19 +187,19 @@ const Profile = () => {
         </div>
 
         {/* Right Side: Security Password Settings */}
-        <div className="glass-panel" style={styles.sectionCard}>
-          <h2 style={styles.sectionTitle}>Change Password</h2>
-          <div style={styles.divider}></div>
+        <div className="glass-panel profile-section-card">
+          <h2 className="profile-section-title">Change Password</h2>
+          <div className="profile-divider"></div>
 
           {passwordSuccess && (
-            <div style={styles.successBanner} className="animate-slide-in">
+            <div className="profile-success-banner animate-slide-in">
               <CheckCircle size={18} />
               <span>{passwordSuccess}</span>
             </div>
           )}
 
           {passwordError && (
-            <div style={styles.errorBanner} className="animate-slide-in">
+            <div className="profile-error-banner animate-slide-in">
               <AlertCircle size={18} />
               <span>{passwordError}</span>
             </div>
@@ -210,13 +208,12 @@ const Profile = () => {
           <form onSubmit={handleUpdatePassword}>
             <div className="form-group">
               <label className="form-label" htmlFor="currentPassword">Current Password</label>
-              <div style={styles.inputContainer}>
-                <Lock style={styles.inputIcon} size={18} />
+              <div className="profile-input-container">
+                <Lock className="profile-input-icon" size={18} />
                 <input
                   id="currentPassword"
                   type="password"
-                  className="form-input"
-                  style={styles.inputWithIcon}
+                  className="form-input profile-input-with-icon"
                   placeholder="••••••••"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
@@ -228,13 +225,12 @@ const Profile = () => {
 
             <div className="form-group">
               <label className="form-label" htmlFor="newPassword">New Password</label>
-              <div style={styles.inputContainer}>
-                <Lock style={styles.inputIcon} size={18} />
+              <div className="profile-input-container">
+                <Lock className="profile-input-icon" size={18} />
                 <input
                   id="newPassword"
                   type="password"
-                  className="form-input"
-                  style={styles.inputWithIcon}
+                  className="form-input profile-input-with-icon"
                   placeholder="••••••••"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -246,13 +242,12 @@ const Profile = () => {
 
             <div className="form-group" style={{ marginBottom: '1.5rem' }}>
               <label className="form-label" htmlFor="confirmPassword">Confirm New Password</label>
-              <div style={styles.inputContainer}>
-                <Lock style={styles.inputIcon} size={18} />
+              <div className="profile-input-container">
+                <Lock className="profile-input-icon" size={18} />
                 <input
                   id="confirmPassword"
                   type="password"
-                  className="form-input"
-                  style={styles.inputWithIcon}
+                  className="form-input profile-input-with-icon"
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -275,111 +270,6 @@ const Profile = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2rem',
-    marginTop: '1rem',
-  },
-  header: {
-    borderBottom: '1px solid var(--border-color)',
-    paddingBottom: '1rem',
-  },
-  layout: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-    gap: '2rem',
-    alignItems: 'start',
-  },
-  sectionCard: {
-    padding: '2rem',
-    boxShadow: 'var(--shadow-md)',
-  },
-  sectionTitle: {
-    fontSize: '1.25rem',
-    fontWeight: 700,
-  },
-  divider: {
-    height: '1px',
-    backgroundColor: 'var(--border-color)',
-    margin: '1rem 0 1.5rem 0',
-  },
-  inputContainer: {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  inputIcon: {
-    position: 'absolute',
-    left: '1rem',
-    color: 'var(--text-muted)',
-  },
-  inputWithIcon: {
-    paddingLeft: '2.75rem',
-  },
-  successBanner: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
-    color: 'var(--success)',
-    padding: '0.75rem 1rem',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.875rem',
-    marginBottom: '1.5rem',
-  },
-  errorBanner: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    backgroundColor: 'rgba(239, 68, 68, 0.12)',
-    border: '1px solid rgba(239, 68, 68, 0.2)',
-    color: 'var(--error)',
-    padding: '0.75rem 1rem',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.875rem',
-    marginBottom: '1.5rem',
-  },
-  detailsBlock: {
-    marginTop: '2rem',
-    padding: '1.25rem',
-    backgroundColor: 'var(--bg-tertiary)',
-    borderRadius: 'var(--radius-lg)',
-    border: '1px solid var(--border-color)',
-  },
-  detailsGrid: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-  },
-  detailsRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '0.9rem',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.03)',
-    paddingBottom: '0.35rem',
-  },
-  detailsLabel: {
-    color: 'var(--text-muted)',
-    fontWeight: 500,
-  },
-  detailsValue: {
-    color: 'var(--text-primary)',
-    fontWeight: 600,
-  },
-  errorCard: {
-    padding: '3rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '40vh',
-    marginTop: '2rem',
-  }
 };
 
 export default Profile;

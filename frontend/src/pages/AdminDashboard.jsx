@@ -3,6 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import PortalLayout from '../layouts/PortalLayout';
 import api from '../services/api';
 import { TableSkeleton } from '../components/LoadingSkeleton';
+import './AdminDashboard.css';
 import { 
   Award, 
   Users, 
@@ -44,6 +45,10 @@ const AdminDashboard = () => {
   const [approvalError, setApprovalError] = useState('');
   const [approvalSuccess, setApprovalSuccess] = useState('');
 
+  // Pending Vehicles State
+  const [pendingVehicles, setPendingVehicles] = useState([]);
+  const [pvLoading, setPvLoading] = useState(false);
+
   // Fetch Dashboard Stats
   const fetchStats = async () => {
     try {
@@ -71,6 +76,7 @@ const AdminDashboard = () => {
   };
 
   // Fetch Manufacturer Registrations
+  const [manufacturersList, setManufacturersList] = useState([]); // local cache helper
   const fetchManufacturers = async () => {
     try {
       setMLoading(true);
@@ -83,6 +89,19 @@ const AdminDashboard = () => {
     }
   };
 
+  // Fetch Pending Vehicles
+  const fetchPendingVehicles = async () => {
+    try {
+      setPvLoading(true);
+      const res = await api.get('/vehicles/admin/pending');
+      setPendingVehicles(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setPvLoading(false);
+    }
+  };
+
   // Load appropriate data when tab switches
   useEffect(() => {
     fetchStats();
@@ -91,6 +110,8 @@ const AdminDashboard = () => {
       fetchManufacturers(); // For associating approved manufacturers in select dropdown
     } else if (activeTab === 'approvals') {
       fetchManufacturers();
+    } else if (activeTab === 'vehicles') {
+      fetchPendingVehicles();
     }
   }, [activeTab]);
 
@@ -98,10 +119,6 @@ const AdminDashboard = () => {
   const handleManufacturerStatus = async (id, status) => {
     setApprovalError('');
     setApprovalSuccess('');
-    
-    if (!window.confirm(`Are you sure you want to change this registration status to ${status.toUpperCase()}?`)) {
-      return;
-    }
 
     try {
       const res = await api.put(`/admin/manufacturers/${id}/status`, { status });
@@ -110,6 +127,21 @@ const AdminDashboard = () => {
       fetchStats();
     } catch (err) {
       setApprovalError(err.response?.data?.message || 'Failed to update partner registration status.');
+    }
+  };
+
+  // Handle Vehicle Approval / Rejection (Remove Fake Listing)
+  const handleVehicleStatus = async (id, status) => {
+    setApprovalError('');
+    setApprovalSuccess('');
+
+    try {
+      const res = await api.put(`/vehicles/admin/${id}/status`, { status });
+      setApprovalSuccess(res.data.message);
+      fetchPendingVehicles();
+      fetchStats();
+    } catch (err) {
+      setApprovalError(err.response?.data?.message || 'Failed to update vehicle status.');
     }
   };
 
@@ -185,10 +217,6 @@ const AdminDashboard = () => {
   const handleDeleteBrand = async (id, name) => {
     setBrandError('');
     setBrandSuccess('');
-    
-    if (!window.confirm(`WARNING: Deleting brand "${name}" will remove all mapped vehicles and variants. Are you sure?`)) {
-      return;
-    }
 
     try {
       const res = await api.delete(`/brands/${id}`);
@@ -206,67 +234,67 @@ const AdminDashboard = () => {
 
   return (
     <PortalLayout role="admin" activeTab={activeTab} setActiveTab={setActiveTab}>
-      <div style={styles.dashboardContainer} className="animate-fade-in">
+      <div className="portal-container animate-fade-in">
         
         {/* Dynamic Section Header */}
-        <div style={styles.header}>
+        <div className="portal-header">
           <h1>Admin Control Panel</h1>
           <p style={{ color: 'var(--text-muted)' }}>
             {activeTab === 'overview' && 'System statistics and pending onboarding overview'}
             {activeTab === 'brands' && 'Manage automobile catalog brands list'}
             {activeTab === 'approvals' && 'Review and toggle partner registrations status'}
+            {activeTab === 'vehicles' && 'Review and approve/reject partner vehicle uploads'}
           </p>
         </div>
 
         {/* Tab 1: OVERVIEW SCREEN */}
         {activeTab === 'overview' && (
-          <div style={styles.sectionFlow}>
+          <div className="portal-container" style={{ gap: '1.5rem' }}>
             {/* Stats Metric Cards Grid */}
-            <div style={styles.statsGrid}>
-              <div className="glass-panel" style={styles.statCard}>
+            <div className="stats-grid">
+              <div className="glass-panel stat-card">
                 <Users size={24} color="var(--primary)" />
                 <div>
-                  <h3 style={styles.statVal}>{statsLoading ? '...' : stats?.totalUsers}</h3>
-                  <p style={styles.statLabel}>Customers Registered</p>
+                  <h3 className="stat-card-value">{statsLoading ? '...' : stats?.totalUsers}</h3>
+                  <p className="stat-card-label">Customers Registered</p>
                 </div>
               </div>
 
-              <div className="glass-panel" style={styles.statCard}>
+              <div className="glass-panel stat-card">
                 <Award size={24} color="var(--accent)" />
                 <div>
-                  <h3 style={styles.statVal}>{statsLoading ? '...' : stats?.totalBrands}</h3>
-                  <p style={styles.statLabel}>Automobile Brands</p>
+                  <h3 className="stat-card-value">{statsLoading ? '...' : stats?.totalBrands}</h3>
+                  <p className="stat-card-label">Automobile Brands</p>
                 </div>
               </div>
 
-              <div className="glass-panel" style={styles.statCard}>
+              <div className="glass-panel stat-card">
                 <Building size={24} color="var(--success)" />
                 <div>
-                  <h3 style={styles.statVal}>{statsLoading ? '...' : stats?.totalManufacturers}</h3>
-                  <p style={styles.statLabel}>Brand Partners</p>
+                  <h3 className="stat-card-value">{statsLoading ? '...' : stats?.totalManufacturers}</h3>
+                  <p className="stat-card-label">Brand Partners</p>
                 </div>
               </div>
 
-              <div className="glass-panel" style={{
-                ...styles.statCard, 
+              <div className="glass-panel stat-card" style={{
                 borderColor: stats?.pendingManufacturers > 0 ? 'var(--warning)' : 'var(--glass-border)',
                 background: stats?.pendingManufacturers > 0 ? 'radial-gradient(circle at top right, rgba(245,158,11,0.05), transparent 40%), var(--glass-bg)' : 'var(--glass-bg)'
               }}>
                 <ShieldCheck size={24} color={stats?.pendingManufacturers > 0 ? 'var(--warning)' : 'var(--text-muted)'} />
                 <div>
-                  <h3 style={styles.statVal}>{statsLoading ? '...' : stats?.pendingManufacturers}</h3>
-                  <p style={styles.statLabel}>Pending Approvals</p>
+                  <h3 className="stat-card-value">{statsLoading ? '...' : stats?.pendingManufacturers}</h3>
+                  <p className="stat-card-label">Pending Approvals</p>
                 </div>
               </div>
             </div>
 
             {/* Quick Actions / Pending Alert Board */}
-            <div className="glass-panel" style={styles.cardBox}>
+            <div className="glass-panel activity-card">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 Onboarding Activity Tracker
               </h2>
               {stats?.pendingManufacturers > 0 ? (
-                <div style={styles.pendingNotification}>
+                <div className="pending-alert-banner">
                   <AlertCircle size={20} color="var(--warning)" style={{ flexShrink: 0 }} />
                   <div style={{ flexGrow: 1 }}>
                     <p style={{ fontWeight: 600 }}>Action Required</p>
@@ -289,11 +317,11 @@ const AdminDashboard = () => {
 
         {/* Tab 2: BRANDS MANAGER */}
         {activeTab === 'brands' && (
-          <div style={styles.sectionFlow}>
-            {brandError && <div style={styles.errorBanner} className="animate-slide-in"><AlertCircle size={18} /> {brandError}</div>}
-            {brandSuccess && <div style={styles.successBanner} className="animate-slide-in"><Check size={18} /> {brandSuccess}</div>}
+          <div className="portal-container" style={{ gap: '1.5rem' }}>
+            {brandError && <div className="errorBanner animate-slide-in"><AlertCircle size={18} /> {brandError}</div>}
+            {brandSuccess && <div className="successBanner animate-slide-in"><Check size={18} /> {brandSuccess}</div>}
 
-            <div style={styles.actionRow}>
+            <div className="action-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2>Catalog Brands ({brands.length})</h2>
               <button className="btn btn-primary" onClick={() => openBrandModal(null)}>
                 <Plus size={18} /> Add New Brand
@@ -301,35 +329,35 @@ const AdminDashboard = () => {
             </div>
 
             {brandsLoading ? (
-              <TableSkeleton cols={4} rows={3} />
+              <TableSkeleton cols={5} rows={3} />
             ) : brands.length === 0 ? (
-              <div className="glass-panel" style={styles.emptyCard}>
+              <div className="glass-panel empty-card">
                 <p style={{ color: 'var(--text-secondary)' }}>No brands configured yet. Click "Add New Brand" to begin.</p>
               </div>
             ) : (
-              <div className="glass-panel" style={{ padding: '1rem', overflowX: 'auto' }}>
-                <table style={styles.table}>
+              <div className="glass-panel portal-table-container">
+                <table className="portal-table">
                   <thead>
                     <tr>
-                      <th style={styles.th}>Logo</th>
-                      <th style={styles.th}>Brand Name</th>
-                      <th style={styles.th}>Represented By</th>
-                      <th style={styles.th}>Description</th>
-                      <th style={styles.th}>Actions</th>
+                      <th>Logo</th>
+                      <th>Brand Name</th>
+                      <th>Represented By</th>
+                      <th>Description</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {brands.map((brand) => (
-                      <tr key={brand.id} style={styles.tr}>
-                        <td style={styles.td}>
+                      <tr key={brand.id}>
+                        <td>
                           {brand.logo_url ? (
-                            <img src={brand.logo_url} alt={brand.name} style={styles.logoPreview} />
+                            <img src={brand.logo_url} alt={brand.name} className="brand-logo-preview" />
                           ) : (
-                            <div style={styles.logoPlaceholder}><ImageIcon size={16} /></div>
+                            <div className="brand-logo-placeholder"><ImageIcon size={16} /></div>
                           )}
                         </td>
-                        <td style={{ ...styles.td, fontWeight: 700 }}>{brand.name}</td>
-                        <td style={styles.td}>
+                        <td style={{ fontWeight: 700 }}>{brand.name}</td>
+                        <td>
                           {brand.manufacturer_company ? (
                             <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
                               {brand.manufacturer_company}
@@ -338,15 +366,15 @@ const AdminDashboard = () => {
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Unassociated</span>
                           )}
                         </td>
-                        <td style={{ ...styles.td, color: 'var(--text-secondary)', maxWidth: '300px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        <td style={{ color: 'var(--text-secondary)', maxWidth: '300px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
                           {brand.description || '-'}
                         </td>
-                        <td style={styles.td}>
+                        <td>
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button style={styles.editBtn} onClick={() => openBrandModal(brand)} title="Edit Brand">
+                            <button className="icon-action-btn edit" onClick={() => openBrandModal(brand)} title="Edit Brand">
                               <Edit size={16} />
                             </button>
-                            <button style={styles.deleteBtn} onClick={() => handleDeleteBrand(brand.id, brand.name)} title="Delete Brand">
+                            <button className="icon-action-btn delete" onClick={() => handleDeleteBrand(brand.id, brand.name)} title="Delete Brand">
                               <Trash2 size={16} />
                             </button>
                           </div>
@@ -362,62 +390,54 @@ const AdminDashboard = () => {
 
         {/* Tab 3: ONBOARDING APPROVALS */}
         {activeTab === 'approvals' && (
-          <div style={styles.sectionFlow}>
-            {approvalError && <div style={styles.errorBanner} className="animate-slide-in"><AlertCircle size={18} /> {approvalError}</div>}
-            {approvalSuccess && <div style={styles.successBanner} className="animate-slide-in"><Check size={18} /> {approvalSuccess}</div>}
+          <div className="portal-container" style={{ gap: '1.5rem' }}>
+            {approvalError && <div className="errorBanner animate-slide-in"><AlertCircle size={18} /> {approvalError}</div>}
+            {approvalSuccess && <div className="successBanner animate-slide-in"><Check size={18} /> {approvalSuccess}</div>}
 
             <h2>Manufacturer Registrations ({manufacturers.length})</h2>
 
             {mLoading ? (
-              <TableSkeleton cols={5} rows={3} />
+              <TableSkeleton cols={6} rows={3} />
             ) : manufacturers.length === 0 ? (
-              <div className="glass-panel" style={styles.emptyCard}>
+              <div className="glass-panel empty-card">
                 <p style={{ color: 'var(--text-secondary)' }}>No manufacturer registration records found.</p>
               </div>
             ) : (
-              <div className="glass-panel" style={{ padding: '1rem', overflowX: 'auto' }}>
-                <table style={styles.table}>
+              <div className="glass-panel portal-table-container">
+                <table className="portal-table">
                   <thead>
                     <tr>
-                      <th style={styles.th}>Brand</th>
-                      <th style={styles.th}>Company Details</th>
-                      <th style={styles.th}>Registration ID</th>
-                      <th style={styles.th}>User Account</th>
-                      <th style={styles.th}>Status</th>
-                      <th style={styles.th}>Actions</th>
+                      <th>Brand</th>
+                      <th>Company Details</th>
+                      <th>Registration ID</th>
+                      <th>User Account</th>
+                      <th>Status</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {manufacturers.map((m) => (
-                      <tr key={m.id} style={styles.tr}>
-                        <td style={{ ...styles.td, fontWeight: 700 }}>{m.brand_name}</td>
-                        <td style={styles.td}>
+                      <tr key={m.id}>
+                        <td style={{ fontWeight: 700 }}>{m.brand_name}</td>
+                        <td>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontWeight: 600 }}>{m.company_name}</span>
                             <span style={{ fontSize: '0.775rem', color: 'var(--text-muted)' }}>Registered: {new Date(m.created_at).toLocaleDateString()}</span>
                           </div>
                         </td>
-                        <td style={{ ...styles.td, fontFamily: 'monospace', fontSize: '0.85rem' }}>{m.registration_number}</td>
-                        <td style={styles.td}>
+                        <td style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}>{m.registration_number}</td>
+                        <td>
                           <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span>{m.username}</span>
                             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{m.email}</span>
                           </div>
                         </td>
-                        <td style={styles.td}>
-                          <span style={{
-                            ...styles.statusBadge,
-                            backgroundColor: m.status === 'approved' ? 'rgba(16,185,129,0.15)' : 
-                                             m.status === 'pending' ? 'rgba(245,158,11,0.15)' : 
-                                             'rgba(239,68,68,0.15)',
-                            color: m.status === 'approved' ? 'var(--success)' : 
-                                   m.status === 'pending' ? 'var(--warning)' : 
-                                   'var(--error)'
-                          }}>
+                        <td>
+                          <span className={`status-badge ${m.status === 'approved' ? 'approved' : m.status === 'pending' ? 'pending' : 'rejected'}`}>
                             {m.status.toUpperCase()}
                           </span>
                         </td>
-                        <td style={styles.td}>
+                        <td>
                           {m.status === 'pending' ? (
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                               <button 
@@ -448,19 +468,93 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Tab 4: VEHICLE UPLOADS REVIEW */}
+        {activeTab === 'vehicles' && (
+          <div className="portal-container" style={{ gap: '1.5rem' }}>
+            {approvalError && <div className="errorBanner animate-slide-in"><AlertCircle size={18} /> {approvalError}</div>}
+            {approvalSuccess && <div className="successBanner animate-slide-in"><Check size={18} /> {approvalSuccess}</div>}
+
+            <h2>Pending Vehicle Listings ({pendingVehicles.length})</h2>
+
+            {pvLoading ? (
+              <TableSkeleton cols={6} rows={3} />
+            ) : pendingVehicles.length === 0 ? (
+              <div className="glass-panel empty-card">
+                <p style={{ color: 'var(--text-secondary)' }}>No pending vehicle listings waiting for review.</p>
+              </div>
+            ) : (
+              <div className="glass-panel portal-table-container">
+                <table className="portal-table">
+                  <thead>
+                    <tr>
+                      <th>Image</th>
+                      <th>Model Name</th>
+                      <th>Brand</th>
+                      <th>Type & Category</th>
+                      <th>Price Range</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingVehicles.map((v) => (
+                      <tr key={v.id}>
+                        <td>
+                          {v.primary_image ? (
+                            <img src={v.primary_image} alt={v.name} className="vehicle-banner-preview" />
+                          ) : (
+                            <div className="brand-logo-placeholder"><Car size={16} /></div>
+                          )}
+                        </td>
+                        <td style={{ fontWeight: 700 }}>{v.name}</td>
+                        <td style={{ fontWeight: 600, color: 'var(--primary)' }}>{v.brand_name}</td>
+                        <td>{v.type.toUpperCase()} ({v.body_type})</td>
+                        <td>
+                          {v.min_price ? (
+                            `$${parseFloat(v.min_price).toLocaleString()} - $${parseFloat(v.max_price).toLocaleString()}`
+                          ) : (
+                            'N/A'
+                          )}
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button 
+                              className="btn btn-primary" 
+                              style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem', backgroundColor: 'var(--success)' }}
+                              onClick={() => handleVehicleStatus(v.id, 'approved')}
+                            >
+                              <Check size={14} /> Approve
+                            </button>
+                            <button 
+                              className="btn btn-danger" 
+                              style={{ padding: '0.35rem 0.75rem', fontSize: '0.8rem' }}
+                              onClick={() => handleVehicleStatus(v.id, 'rejected')}
+                            >
+                              <X size={14} /> Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* BRANDS CRUD MODAL CONTAINER */}
         {showBrandModal && (
-          <div style={styles.modalBackdrop}>
-            <div className="glass-panel animate-slide-in" style={styles.modalCard}>
-              <div style={styles.modalHeader}>
+          <div className="modal-backdrop">
+            <div className="glass-panel modal-card animate-slide-in">
+              <div className="modal-header">
                 <h2>{currentBrand ? 'Edit Brand Record' : 'Add Catalog Brand'}</h2>
-                <button style={styles.closeBtn} onClick={() => setShowBrandModal(false)}>
+                <button className="modal-close-btn" onClick={() => setShowBrandModal(false)}>
                   <X size={20} />
                 </button>
               </div>
 
-              {brandError && <div style={styles.errorBanner}><AlertCircle size={18} /> {brandError}</div>}
-              {brandSuccess && <div style={styles.successBanner}><Check size={18} /> {brandSuccess}</div>}
+              {brandError && <div className="errorBanner"><AlertCircle size={18} /> {brandError}</div>}
+              {brandSuccess && <div className="successBanner"><Check size={18} /> {brandSuccess}</div>}
 
               <form onSubmit={handleBrandSubmit} style={{ marginTop: '1.25rem' }}>
                 
@@ -537,7 +631,7 @@ const AdminDashboard = () => {
                   />
                 </div>
 
-                <div style={styles.modalActions}>
+                <div className="modal-actions">
                   <button 
                     type="button" 
                     className="btn btn-secondary" 
@@ -563,201 +657,5 @@ const AdminDashboard = () => {
     </PortalLayout>
   );
 };
-
-const styles = {
-  dashboardContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '2rem',
-  },
-  header: {
-    borderBottom: '1px solid var(--border-color)',
-    paddingBottom: '1rem',
-  },
-  sectionFlow: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '1.5rem',
-  },
-  statCard: {
-    padding: '1.5rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1.25rem',
-  },
-  statVal: {
-    fontSize: '1.75rem',
-    fontWeight: 800,
-    lineHeight: 1.1,
-  },
-  statLabel: {
-    color: 'var(--text-muted)',
-    fontSize: '0.825rem',
-    fontWeight: 500,
-    marginTop: '0.25rem',
-  },
-  cardBox: {
-    padding: '2rem',
-    boxShadow: 'var(--shadow-md)',
-  },
-  pendingNotification: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    backgroundColor: 'rgba(245, 158, 11, 0.08)',
-    border: '1px solid rgba(245, 158, 11, 0.2)',
-    padding: '1rem',
-    borderRadius: 'var(--radius-lg)',
-  },
-  actionRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    textAlign: 'left',
-    fontSize: '0.925rem',
-  },
-  th: {
-    padding: '0.75rem 1rem',
-    borderBottom: '2px solid var(--border-color)',
-    color: 'var(--text-muted)',
-    fontWeight: 600,
-  },
-  tr: {
-    borderBottom: '1px solid var(--border-color)',
-    transition: 'background var(--transition-fast)',
-    '&:hover': {
-      backgroundColor: 'var(--bg-tertiary)',
-    }
-  },
-  td: {
-    padding: '0.85rem 1rem',
-    verticalAlign: 'middle',
-  },
-  logoPreview: {
-    height: '24px',
-    maxWidth: '60px',
-    objectFit: 'contain',
-  },
-  logoPlaceholder: {
-    width: '32px',
-    height: '24px',
-    borderRadius: '4px',
-    backgroundColor: 'var(--bg-tertiary)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'var(--text-muted)',
-  },
-  editBtn: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: 'var(--primary)',
-    padding: '0.25rem',
-  },
-  deleteBtn: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: 'var(--error)',
-    padding: '0.25rem',
-  },
-  statusBadge: {
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    padding: '0.2rem 0.5rem',
-    borderRadius: '12px',
-    display: 'inline-block',
-  },
-  emptyCard: {
-    padding: '4rem',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: '2px dashed var(--border-color)',
-  },
-  errorBanner: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    backgroundColor: 'rgba(239, 68, 68, 0.12)',
-    border: '1px solid rgba(239, 68, 68, 0.2)',
-    color: 'var(--error)',
-    padding: '0.75rem 1rem',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.875rem',
-  },
-  successBanner: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-    border: '1px solid rgba(16, 185, 129, 0.2)',
-    color: 'var(--success)',
-    padding: '0.75rem 1rem',
-    borderRadius: 'var(--radius-md)',
-    fontSize: '0.875rem',
-  },
-  modalBackdrop: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 200,
-    backdropFilter: 'blur(4px)',
-    padding: '1rem',
-  },
-  modalCard: {
-    width: '100%',
-    maxWidth: '480px',
-    padding: '2rem',
-    boxShadow: 'var(--shadow-xl)',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-  },
-  modalHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-  closeBtn: {
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    color: 'var(--text-muted)',
-    display: 'flex',
-    alignItems: 'center',
-    padding: 0,
-  },
-  modalActions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '0.75rem',
-  }
-};
-
-// CSS table row hover injection
-const styleTag = document.createElement('style');
-styleTag.innerHTML = `
-  table tbody tr:hover {
-    background-color: var(--bg-tertiary);
-  }
-`;
-document.head.appendChild(styleTag);
 
 export default AdminDashboard;

@@ -1,0 +1,120 @@
+/* Find Ride - Profile Page CSS */
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.profile-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+
+.profile-section-card {
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.profile-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.profile-divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 1rem 0 1.5rem 0;
+}
+
+.profile-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.profile-input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+}
+
+.profile-input-with-icon {
+  padding-left: 2.75rem;
+}
+
+.profile-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-details-block {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.profile-details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.profile-details-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 0.35rem;
+}
+
+.profile-details-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.profile-details-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.profile-error-card {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  margin-top: 2rem;
+}

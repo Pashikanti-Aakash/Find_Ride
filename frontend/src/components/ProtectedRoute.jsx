@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import './ProtectedRoute.css';
 
 // Protect private routes for authenticated users
 export const ProtectedRoute = ({ children }) => {
@@ -8,7 +9,7 @@ export const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div style={styles.loadingWrapper}>
+      <div className="protected-route-loading-wrapper">
         <div className="spinner" style={{ width: '3rem', height: '3rem', borderTopColor: 'var(--primary)' }}></div>
         <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>Verifying credentials...</p>
       </div>
@@ -24,11 +25,11 @@ export const ProtectedRoute = ({ children }) => {
 
 // Protect routes that require specific roles (e.g. admin or manufacturer)
 export const RoleRoute = ({ children, allowedRoles }) => {
-  const { user, manufacturerDetails, loading } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
   if (loading) {
     return (
-      <div style={styles.loadingWrapper}>
+      <div className="protected-route-loading-wrapper">
         <div className="spinner" style={{ width: '3rem', height: '3rem', borderTopColor: 'var(--primary)' }}></div>
         <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>Verifying role authorization...</p>
       </div>
@@ -44,19 +45,5 @@ export const RoleRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/" replace />;
   }
 
-  // If manufacturer, check if they are approved for sub-dashboard elements
-  // Wait, let the dashboard itself handle the pending state presentation,
-  // but if we are targeting general manufacturer paths, let it pass through.
   return children;
-};
-
-const styles = {
-  loadingWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '60vh',
-    width: '100%'
-  }
 };

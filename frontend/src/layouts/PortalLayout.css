@@ -1,0 +1,17 @@
+/* Find Ride - PortalLayout CSS */
+
+.portal-layout-wrapper {
+  display: flex;
+  gap: 2.5rem;
+  align-items: start;
+  width: 100%;
+  min-height: calc(100vh - 120px);
+}
+
+.portal-layout-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}

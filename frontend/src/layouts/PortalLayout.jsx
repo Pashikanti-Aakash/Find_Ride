@@ -1,9 +1,10 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar';
+import './PortalLayout.css';
 
 const PortalLayout = ({ role, activeTab, setActiveTab, children }) => {
   return (
-    <div style={styles.portalWrapper}>
+    <div className="portal-layout-wrapper">
       {/*Collapsible Navigation Panel */}
       <Sidebar 
         role={role} 
@@ -12,28 +13,11 @@ const PortalLayout = ({ role, activeTab, setActiveTab, children }) => {
       />
 
       {/* Main Dashboard Panel */}
-      <div style={styles.contentArea}>
+      <div className="portal-layout-content">
         {children}
       </div>
     </div>
   );
-};
-
-const styles = {
-  portalWrapper: {
-    display: 'flex',
-    gap: '2.5rem',
-    alignItems: 'start',
-    width: '100%',
-    minHeight: 'calc(100vh - 120px)',
-  },
-  contentArea: {
-    flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-    width: '100%',
-  }
 };
 
 export default PortalLayout;

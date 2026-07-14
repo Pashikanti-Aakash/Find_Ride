@@ -1,9 +1,10 @@
 import React from 'react';
 import { GitCompare } from 'lucide-react';
+import './Compare.css';
 
 const Compare = () => {
   return (
-    <div className="glass-panel animate-fade-in" style={styles.card}>
+    <div className="glass-panel compare-card animate-fade-in">
       <GitCompare size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
       <h2>Compare Vehicles</h2>
       <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', maxWidth: '400px', textAlign: 'center' }}>
@@ -11,18 +12,6 @@ const Compare = () => {
       </p>
     </div>
   );
-};
-
-const styles = {
-  card: {
-    padding: '3rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '40vh',
-    marginTop: '2rem',
-  }
 };
 
 export default Compare;

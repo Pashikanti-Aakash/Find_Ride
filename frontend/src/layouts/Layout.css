@@ -1,0 +1,80 @@
+/* Find Ride - Layout CSS */
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.layout-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-footer {
+  margin-top: auto;
+  border-radius: 0;
+  border-width: 1px 0 0 0;
+  border-top-color: var(--border-color);
+  padding: 3rem 2rem 1.5rem 2rem;
+}
+
+.layout-footer-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.layout-brand-sec {
+  flex: 1 1 300px;
+}
+
+.layout-links-sec {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+.layout-links-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.layout-col-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.layout-footer-link {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.layout-footer-link:hover {
+  color: var(--primary) !important;
+}
+
+.layout-copyright {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

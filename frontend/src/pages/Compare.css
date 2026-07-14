@@ -1,0 +1,11 @@
+/* Find Ride - Compare Page CSS */
+
+.compare-card {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  margin-top: 2rem;
+}

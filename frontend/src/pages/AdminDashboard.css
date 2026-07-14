@@ -1,0 +1,295 @@
+/* Find Ride - Portal Layout & Dashboards CSS */
+
+.portal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.portal-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.portal-header h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Stats Metrics Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.stat-card-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.stat-card-label {
+  color: var(--text-muted);
+  font-size: 0.825rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+/* Explainer/Activity Banner */
+.activity-card {
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.pending-alert-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backgroundColor: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+/* Data Tables */
+.portal-table-container {
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.portal-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.925rem;
+}
+
+.portal-table th {
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-muted);
+  fontWeight: 600;
+}
+
+.portal-table tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
+}
+
+.portal-table tr:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.portal-table td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+}
+
+/* Icons & Previews */
+.brand-logo-preview {
+  height: 24px;
+  max-width: 60px;
+  object-fit: contain;
+}
+
+.brand-logo-placeholder, .vehicle-logo-placeholder {
+  width: 32px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: var(--bg-tertiary);
+  display: flex;
+  align-items: center;
+  justifyContent: center;
+  color: var(--text-muted);
+}
+
+.vehicle-banner-preview {
+  height: 36px;
+  width: 54px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.icon-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.icon-action-btn.edit {
+  color: var(--primary);
+}
+
+.icon-action-btn.delete {
+  color: var(--error);
+}
+
+/* Badges */
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  display: inline-block;
+  text-align: center;
+}
+
+.status-badge.approved {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+.status-badge.pending {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+
+.status-badge.rejected {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--error);
+}
+
+/* Modals Backdrop & Card */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justifyContent: center;
+  z-index: 200;
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  box-shadow: var(--shadow-xl);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* Multi-Step Wizard Styling */
+.wizard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.wizard-step-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  background-color: var(--primary-light);
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+.wizard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.wizard-upload-box {
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justifyContent: center;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.wizard-upload-box:hover {
+  border-color: var(--primary);
+}
+
+.wizard-upload-list {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 1rem;
+}
+
+.wizard-upload-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.5rem;
+  background-color: var(--bg-secondary);
+}
+
+/* Switch Tabs Submanager */
+.submanager-tabs-bar {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.submanager-tab-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
