@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import './VehicleDetail.css';
 import { DetailSkeleton } from '../components/LoadingSkeleton';
 import { 
@@ -10,9 +11,9 @@ import {
   Fuel, 
   Compass, 
   Gauge, 
-  Calendar,
   Zap,
-  ShieldCheck
+  Car,
+  Heart
 } from 'lucide-react';
 
 const VehicleDetail = () => {
@@ -26,6 +27,43 @@ const VehicleDetail = () => {
   const [activeColor, setActiveColor] = useState(null);
   const [activeImage, setActiveImage] = useState(null);
   const [activeTab, setActiveTab] = useState('specs'); // 'specs' or 'features'
+
+  const { user } = useContext(AuthContext);
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  // Check wishlist status on load
+  useEffect(() => {
+    const checkFav = async () => {
+      if (user && user.role === 'user') {
+        try {
+          const res = await api.get(`/favorites/check/${id}`);
+          setIsFavorited(res.data.isFavorited);
+        } catch (err) {
+          console.error('Error checking favorite status:', err.message);
+        }
+      }
+    };
+    checkFav();
+  }, [id, user]);
+
+  const handleToggleFavorite = async () => {
+    if (!user) {
+      alert('Please login to add vehicles to your favorites wishlist.');
+      navigate('/login');
+      return;
+    }
+    if (user.role !== 'user') {
+      alert('Only general users can add vehicles to their favorites.');
+      return;
+    }
+
+    try {
+      const res = await api.post(`/favorites/${id}`);
+      setIsFavorited(res.data.favorited);
+    } catch (err) {
+      console.error('Error toggling favorite:', err.message);
+    }
+  };
 
   useEffect(() => {
     const fetchVehicleDetails = async () => {
@@ -188,8 +226,21 @@ const VehicleDetail = () => {
         {/* Right Side - Dynamic Specs summary & Variant toggle */}
         <div className="detail-info-panel">
           <div className="detail-brand-title-row">
-            <span className="detail-brand-badge">{vehicle.brand_name}</span>
-            <h1 className="detail-title">{vehicle.name}</h1>
+            <div>
+              <span className="detail-brand-badge">{vehicle.brand_name}</span>
+              <h1 className="detail-title">{vehicle.name}</h1>
+            </div>
+            {user && user.role === 'user' && (
+              <button
+                type="button"
+                className={`detail-favorite-btn ${isFavorited ? 'active' : ''}`}
+                onClick={handleToggleFavorite}
+                title={isFavorited ? "Remove from Favorites" : "Add to Favorites"}
+              >
+                <Heart size={16} fill={isFavorited ? "var(--error)" : "none"} />
+                <span>{isFavorited ? 'Favorited' : 'Add to Favorites'}</span>
+              </button>
+            )}
           </div>
 
           <div className="detail-type-row">

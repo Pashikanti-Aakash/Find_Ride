@@ -367,10 +367,21 @@ const updateVehicleStatus = async (req, res) => {
 // @route   GET /api/vehicles
 // @access  Public
 const getApprovedVehicles = async (req, res) => {
-  const { type, brandId, search } = req.query;
+  const { type, brandId, search, minPrice, maxPrice, seating, fuelTypes, transmissions } = req.query;
 
   try {
-    const vehicles = await Vehicle.findApproved({ type, brandId, search });
+    const filters = {
+      type,
+      brandId: brandId ? parseInt(brandId) : null,
+      search,
+      minPrice: minPrice ? parseFloat(minPrice) : null,
+      maxPrice: maxPrice ? parseFloat(maxPrice) : null,
+      seating: seating ? seating.split(',').map(s => parseInt(s)) : null,
+      fuelTypes: fuelTypes ? fuelTypes.split(',') : null,
+      transmissions: transmissions ? transmissions.split(',') : null
+    };
+
+    const vehicles = await Vehicle.findApproved(filters);
     res.json(vehicles);
   } catch (error) {
     console.error('Get Approved Vehicles Error:', error.message);

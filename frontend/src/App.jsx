@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Vehicles from './pages/Vehicles';
 import VehicleDetail from './pages/VehicleDetail';
+import Favorites from './pages/Favorites';
 import Recommend from './pages/Recommend';
 import Compare from './pages/Compare';
 import AdminDashboard from './pages/AdminDashboard';
@@ -29,12 +30,20 @@ function App() {
             <Route path="/recommend" element={<Recommend />} />
             <Route path="/compare" element={<Compare />} />
 
-            {/* Protected General Profile Route */}
+            {/* Protected General Profile & Wishlist Routes */}
             <Route
               path="/profile"
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favorites"
+              element={
+                <ProtectedRoute>
+                  <Favorites />
                 </ProtectedRoute>
               }
             />

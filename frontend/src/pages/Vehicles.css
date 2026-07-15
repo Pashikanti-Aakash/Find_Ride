@@ -10,32 +10,149 @@
 .catalog-header {
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.catalog-header h1 {
+.catalog-header-text h1 {
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 0.25rem;
 }
 
-/* Search Filters Form Bar */
-.catalog-filter-card {
-  padding: 1.5rem;
+/* Float Compare Board Indicator */
+.compare-float-badge {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #ffffff;
+  padding: 0.6rem 1.25rem;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  transition: all var(--transition-normal);
 }
 
-.catalog-search-row {
+.compare-float-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+/* Two column layout: Left Filter Sidebar, Right Grid Results */
+.catalog-layout-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .catalog-layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Filters Sidebar Card */
+.catalog-filter-sidebar {
+  padding: 1.75rem;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.75rem;
+  position: sticky;
+  top: 90px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding-bottom: 1.25rem;
+}
+
+.filter-group:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.filter-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-reset-link {
+  font-size: 0.75rem;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+/* Budget Slider Styling */
+.budget-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.budget-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.budget-slider-input {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  outline: none;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* Checkbox Option Items */
+.filter-checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.filter-checkbox-field {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+/* Search Header Row */
+.catalog-search-card {
+  padding: 1.25rem;
+  display: flex;
   gap: 1rem;
   width: 100%;
+  margin-bottom: 1.5rem;
 }
 
 .catalog-search-input-wrapper {
   position: relative;
-  flex: 1 1 300px;
+  flex: 1;
   display: flex;
   align-items: center;
 }
@@ -51,23 +168,24 @@
 }
 
 .catalog-brand-select {
-  flex: 0 1 220px;
-  min-width: 180px;
+  flex: 0 1 200px;
+  min-width: 150px;
 }
 
-/* Category Tab Selector Bar */
+/* Category Tab Bar */
 .catalog-tabs-bar {
   display: flex;
   border-bottom: 1px solid var(--border-color);
-  width: 100%;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
 }
 
 .catalog-tab-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
-  font-size: 0.95rem;
+  font-size: 0.925rem;
   font-weight: 600;
   cursor: pointer;
   color: var(--text-secondary);
@@ -85,10 +203,15 @@
 }
 
 /* Listings Grid */
+.catalog-results-panel {
+  display: flex;
+  flex-direction: column;
+}
+
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
 }
 
 .catalog-card {
@@ -100,12 +223,43 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+/* Checkbox styling overlay on cards */
+.catalog-card-compare-chk {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  background: rgba(17, 24, 39, 0.6);
+  padding: 0.35rem 0.5rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.catalog-card-compare-chk:hover {
+  background: rgba(17, 24, 39, 0.8);
+}
+
+.catalog-card-compare-chk.active {
+  background: var(--primary);
+  border-color: var(--primary);
 }
 
 .catalog-image-wrapper {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 170px;
   background-color: var(--bg-tertiary);
   display: flex;
   align-items: center;
@@ -125,10 +279,10 @@
 }
 
 .catalog-card-content {
-  padding: 1.5rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.65rem;
   flex-grow: 1;
 }
 
@@ -139,7 +293,7 @@
 }
 
 .catalog-brand-badge {
-  font-size: 0.75rem;
+  font-size: 0.725rem;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--accent);
@@ -147,7 +301,7 @@
 }
 
 .catalog-type-badge {
-  font-size: 0.75rem;
+  font-size: 0.725rem;
   font-weight: 600;
   color: var(--text-muted);
   background-color: var(--bg-tertiary);
@@ -157,13 +311,13 @@
 }
 
 .catalog-card-title {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .catalog-card-text {
-  font-size: 0.85rem;
+  font-size: 0.825rem;
   color: var(--text-secondary);
   line-height: 1.4;
   display: -webkit-box;
@@ -181,15 +335,15 @@
 }
 
 .catalog-card-price {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--primary);
 }
 
 .catalog-card-btn {
-  font-size: 0.825rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.4rem 0.85rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-sm);
   background-color: var(--primary-light);
   color: var(--primary);
@@ -216,3 +370,33 @@
 .catalog-empty-card p {
   color: var(--text-secondary);
 }
+
+/* Card Heart Toggle Overlay */
+.catalog-card-favorite-btn {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10;
+  background: rgba(17, 24, 39, 0.6);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.catalog-card-favorite-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.catalog-card-favorite-btn.active {
+  color: var(--error);
+  background: rgba(17, 24, 39, 0.7);
+}
+

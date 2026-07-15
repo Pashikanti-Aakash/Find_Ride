@@ -310,8 +310,8 @@ class Vehicle {
     return result.affectedRows > 0;
   }
 
-  // @desc Find all approved vehicles with optional filters for type, brand, and search
-  static async findApproved({ type, brandId, search }) {
+  // @desc Find all approved vehicles with optional filters for type, brand, search, prices, seating, fuel types, and transmissions
+  static async findApproved({ type, brandId, search, minPrice, maxPrice, seating, fuelTypes, transmissions }) {
     let sql = `
       SELECT v.*, b.name as brand_name, b.logo_url as brand_logo,
              (SELECT image_url FROM vehicle_images WHERE vehicle_id = v.id AND is_primary = 1 LIMIT 1) as primary_image,
@@ -338,6 +338,32 @@ class Vehicle {
       sql += ' AND (v.name LIKE ? OR b.name LIKE ? OR v.body_type LIKE ?)';
       const searchWild = '%' + search + '%';
       params.push(searchWild, searchWild, searchWild);
+    }
+
+    // Advanced Filters on variant properties
+    if (minPrice !== undefined && minPrice !== null) {
+      sql += ' AND vv.price >= ?';
+      params.push(minPrice);
+    }
+
+    if (maxPrice !== undefined && maxPrice !== null) {
+      sql += ' AND vv.price <= ?';
+      params.push(maxPrice);
+    }
+
+    if (seating && seating.length > 0) {
+      sql += ' AND vv.seating_capacity IN (?)';
+      params.push(seating);
+    }
+
+    if (fuelTypes && fuelTypes.length > 0) {
+      sql += ' AND vv.fuel_type IN (?)';
+      params.push(fuelTypes);
+    }
+
+    if (transmissions && transmissions.length > 0) {
+      sql += ' AND vv.transmission IN (?)';
+      params.push(transmissions);
     }
 
     sql += ' GROUP BY v.id ORDER BY v.created_at DESC';

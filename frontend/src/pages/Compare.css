@@ -1,11 +1,220 @@
-/* Find Ride - Compare Page CSS */
+/* Find Ride - Compare Vehicles Page CSS */
 
-.compare-card {
-  padding: 3rem;
+.compare-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.compare-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.compare-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.compare-back-btn {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.compare-back-btn:hover {
+  color: var(--primary);
+}
+
+/* Compare Grid Layout Column Table */
+.compare-grid-layout {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  background: var(--glass-bg);
+}
+
+/* Columns header block */
+.compare-row {
+  display: grid;
+  grid-template-columns: 240px repeat(3, 1fr);
+  border-bottom: 1px solid var(--border-color);
+  min-width: 800px;
+}
+
+.compare-row:last-child {
+  border-bottom: none;
+}
+
+.compare-cell {
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.compare-cell:last-child {
+  border-right: none;
+}
+
+/* Header Columns specific adjustments */
+.compare-row-header {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.compare-cell-label {
+  font-weight: 700;
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.015);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Vehicle card header in compare column */
+.compare-vehicle-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  position: relative;
+  align-items: center;
+  text-align: center;
+}
+
+.compare-remove-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all var(--transition-fast);
+}
+
+.compare-remove-btn:hover {
+  background-color: var(--danger);
+  color: #ffffff;
+  border-color: var(--danger);
+}
+
+.compare-header-img-wrapper {
+  width: 100%;
+  height: 120px;
+  background-color: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.compare-header-img {
+  max-width: 90%;
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.compare-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.compare-header-brand {
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.compare-header-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* Row Category Group Title Blocks */
+.compare-row-category-title {
+  background-color: var(--bg-tertiary);
+  grid-template-columns: 1fr;
+  padding: 0.5rem 1.25rem;
+}
+
+.compare-row-category-title span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+
+/* Swatches selector indicator styling in comparisons */
+.compare-swatch-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.compare-swatch-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Empty compare grid column state */
+.compare-empty-col {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 40vh;
-  margin-top: 2rem;
+  color: var(--text-muted);
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 180px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.compare-add-select {
+  width: 100%;
+  max-width: 200px;
+  height: 38px;
+  font-size: 0.825rem;
+}
+
+/* Overall Empty Dashboard View */
+.compare-dashboard-empty {
+  padding: 5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.compare-dashboard-empty h2 {
+  font-size: 1.75rem;
 }

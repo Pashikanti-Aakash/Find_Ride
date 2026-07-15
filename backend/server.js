@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const vehicleRoutes = require('./routes/vehicleRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/favorites', favoriteRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
