@@ -12,10 +12,14 @@ const {
   addColor,
   deleteColor,
   getPendingVehicles,
-  updateVehicleStatus
+  updateVehicleStatus,
+  getApprovedVehicles
 } = require('../controllers/vehicleController');
 const { protect, restrictTo, isApprovedManufacturer } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
+
+// Public route to search approved vehicles
+router.get('/', getApprovedVehicles);
 
 // Public route to retrieve vehicle specs
 router.get('/:id', getVehicleById);

@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Vehicles from './pages/Vehicles';
+import VehicleDetail from './pages/VehicleDetail';
 import Recommend from './pages/Recommend';
 import Compare from './pages/Compare';
 import AdminDashboard from './pages/AdminDashboard';
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/vehicles/:id" element={<VehicleDetail />} />
             <Route path="/recommend" element={<Recommend />} />
             <Route path="/compare" element={<Compare />} />
 

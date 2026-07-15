@@ -363,6 +363,21 @@ const updateVehicleStatus = async (req, res) => {
   }
 };
 
+// @desc    Get approved vehicles (with optional filters)
+// @route   GET /api/vehicles
+// @access  Public
+const getApprovedVehicles = async (req, res) => {
+  const { type, brandId, search } = req.query;
+
+  try {
+    const vehicles = await Vehicle.findApproved({ type, brandId, search });
+    res.json(vehicles);
+  } catch (error) {
+    console.error('Get Approved Vehicles Error:', error.message);
+    res.status(500).json({ message: 'Internal server catalog search error.' });
+  }
+};
+
 module.exports = {
   createVehicle,
   getManufacturerVehicles,
@@ -375,5 +390,6 @@ module.exports = {
   addColor,
   deleteColor,
   getPendingVehicles,
-  updateVehicleStatus
+  updateVehicleStatus,
+  getApprovedVehicles
 };

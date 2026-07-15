@@ -309,6 +309,42 @@ class Vehicle {
     );
     return result.affectedRows > 0;
   }
+
+  // @desc Find all approved vehicles with optional filters for type, brand, and search
+  static async findApproved({ type, brandId, search }) {
+    let sql = `
+      SELECT v.*, b.name as brand_name, b.logo_url as brand_logo,
+             (SELECT image_url FROM vehicle_images WHERE vehicle_id = v.id AND is_primary = 1 LIMIT 1) as primary_image,
+             MIN(vv.price) as min_price, 
+             MAX(vv.price) as max_price
+      FROM vehicles v
+      JOIN brands b ON v.brand_id = b.id
+      LEFT JOIN vehicle_variants vv ON v.id = vv.vehicle_id
+      WHERE v.status = 'approved'
+    `;
+    const params = [];
+
+    if (type) {
+      sql += ' AND v.type = ?';
+      params.push(type);
+    }
+
+    if (brandId) {
+      sql += ' AND v.brand_id = ?';
+      params.push(brandId);
+    }
+
+    if (search) {
+      sql += ' AND (v.name LIKE ? OR b.name LIKE ? OR v.body_type LIKE ?)';
+      const searchWild = '%' + search + '%';
+      params.push(searchWild, searchWild, searchWild);
+    }
+
+    sql += ' GROUP BY v.id ORDER BY v.created_at DESC';
+
+    const [rows] = await db.query(sql, params);
+    return rows;
+  }
 }
 
 module.exports = Vehicle;
